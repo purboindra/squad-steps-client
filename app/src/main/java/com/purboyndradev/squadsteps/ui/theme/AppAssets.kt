@@ -9,5 +9,6 @@ class AppAssets {
         val strider = R.drawable.strider
         val mountain = R.drawable.mountain
         val urban = R.drawable.urban
+        val reward = R.drawable.reward
     }
 }

@@ -3,17 +3,22 @@ package com.purboyndradev.squadsteps.features.main
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -23,7 +28,9 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.purboyndradev.squadsteps.features.home.HomeScreen
 import com.purboyndradev.squadsteps.features.squad.SquadScreen
+import com.purboyndradev.squadsteps.features.squad_leaderboard.SquadLeaderBoardScreen
 import com.purboyndradev.squadsteps.ui.theme.BlackColor
+import com.purboyndradev.squadsteps.ui.theme.DarkGreenColor
 import com.purboyndradev.squadsteps.ui.theme.GreyColor
 import com.purboyndradev.squadsteps.ui.theme.NeutralColor
 import com.purboyndradev.squadsteps.ui.theme.PrimaryColor
@@ -53,8 +60,23 @@ fun MainScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = NeutralColor,
+        floatingActionButton = {
+            if (topLevelBackStack.topLevelKey == Squads) {
+                FloatingActionButton(
+                    onClick = { /* TODO */ },
+                    shape = CircleShape,
+                    containerColor = PrimaryColor
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = "Search",
+                        tint = DarkGreenColor
+                    )
+                }
+            }
+        },
         bottomBar = {
-            NavigationBar (
+            NavigationBar(
                 containerColor = NeutralColor,
             ) {
                 MAIN_LEVEL_ROUTES.forEach { topLevelRoute ->
@@ -101,10 +123,7 @@ fun MainScreen() {
                     SquadScreen(modifier = Modifier.fillMaxSize())
                 }
                 entry<Activity> {
-                    Text(
-                        text = "Activity",
-                        style = MaterialTheme.typography.headlineLarge
-                    )
+                    SquadLeaderBoardScreen(modifier = Modifier.fillMaxSize())
                 }
             }
         )
