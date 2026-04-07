@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.purboyndradev.squadsteps.features.components.HeaderComponent
+import com.purboyndradev.squadsteps.features.components.PodiumList
 import com.purboyndradev.squadsteps.features.components.PodiumRow
 
 @Composable
@@ -22,12 +23,24 @@ fun SquadLeaderBoardScreen(modifier: Modifier = Modifier) {
 
         item {
             HeaderComponent()
+        }
+        item {
             Spacer(modifier = Modifier.height(24.dp))
+        }
+        item {
             CurrentRankComponent()
+        }
+        item {
             Spacer(modifier = Modifier.height(24.dp))
+        }
+        item {
             PodiumRow()
+        }
+        item {
             Spacer(modifier = Modifier.height(24.dp))
-
+        }
+        item {
+            PodiumList()
         }
     }
 }

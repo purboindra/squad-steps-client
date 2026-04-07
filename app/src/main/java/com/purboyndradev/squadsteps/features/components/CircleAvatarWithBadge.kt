@@ -64,7 +64,6 @@ fun CircleAvatarWithBadge(
                     .clip(CircleShape)
             )
 
-            // The Badge
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)

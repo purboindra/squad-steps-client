@@ -36,7 +36,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.purboyndradev.squadsteps.features.components.AppTextField
 import com.purboyndradev.squadsteps.features.components.CircleAvatar
+import com.purboyndradev.squadsteps.features.components.PrimaryButton
 import com.purboyndradev.squadsteps.ui.theme.AppAssets
 import com.purboyndradev.squadsteps.ui.theme.BlackColor
 import com.purboyndradev.squadsteps.ui.theme.DarkGreenColor
@@ -99,60 +101,26 @@ fun LoginScreen(
                         color = Color.White
                     )
                 )
-                TextField(
+                AppTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = {
-                        Text(
-                            "Enter your email", style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Normal,
-                                color = GreyColor2
-                            )
-                        )
-                    },
-                    shape = RoundedCornerShape(100),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = BlackColor,
-                        unfocusedContainerColor = BlackColor,
-                        disabledContainerColor = BlackColor,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = "Enter your email"
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                ElevatedButton(
+                PrimaryButton(
                     onClick = {
                         onNavigate()
                     },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    colors = ButtonColors(
-                        containerColor = PrimaryColor,
-                        contentColor = DarkGreenColor,
-                        disabledContainerColor = GreyColor,
-                        disabledContentColor = Color.White,
-                    )
-                ) {
-                    Row {
+                    label = "Sign in with Passkey",
+                    icon = {
                         Image(
                             painter = painterResource(AppAssets.fingerPrint),
                             contentDescription = "Passkeys"
                         )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Text(
-                            "Sign in with Passkey",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = DarkGreenColor
-                            )
-                        )
                     }
-                }
+                )
 
                 Spacer(modifier = Modifier.height(56.dp))
 
