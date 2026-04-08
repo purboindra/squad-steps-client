@@ -1,8 +1,7 @@
 package com.purboyndradev.squadsteps.features.squad_leaderboard
 
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -19,25 +18,17 @@ fun SquadLeaderBoardScreen(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize()
             .padding(vertical = 12.dp, horizontal = 18.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
 
         item {
             HeaderComponent()
         }
         item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-        item {
             CurrentRankComponent()
         }
         item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-        item {
             PodiumRow()
-        }
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
         }
         item {
             PodiumList()

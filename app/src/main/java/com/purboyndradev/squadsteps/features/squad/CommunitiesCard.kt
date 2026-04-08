@@ -80,7 +80,8 @@ fun CommunitiesCard(modifier: Modifier = Modifier) {
                 AppTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = "Enter your squad name"
+                    placeholder = "Enter your squad name",
+                    useBorder = true
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 PrimaryButton(
