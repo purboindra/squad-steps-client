@@ -1,5 +1,22 @@
 package com.purboyndradev.squadsteps.data.datasources
 
+import com.purboyndradev.squadsteps.core.domain.AppError
 import com.purboyndradev.squadsteps.data.network.api.PasskeysApi
+import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterResponseDto
+import com.purboyndradev.squadsteps.data.network.dtos.ResponseDto
+import com.purboyndradev.squadsteps.core.domain.Result
+import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterRequestDto
+import com.purboyndradev.squadsteps.data.network.mapKtorExceptionToAppError
 
-class PasskeysRemoteDataSource(private val passkeysApi: PasskeysApi) {}
+class PasskeysRemoteDataSource(private val passkeysApi: PasskeysApi) {
+    suspend fun generateRegisterOptions(
+        params: GenerateRegisterRequestDto
+    ): Result<ResponseDto<GenerateRegisterResponseDto>, AppError> {
+        return try {
+            val response = passkeysApi.generateRegisterOptions(params)
+            Result.Success(response)
+        } catch (e: Exception) {
+            Result.Error(mapKtorExceptionToAppError(e))
+        }
+    }
+}
