@@ -30,6 +30,18 @@ class ApiException(message: String) : Exception(message)
 suspend fun mapKtorExceptionToAppError(e: Exception): AppError.Remote {
     return when (e) {
 
+        is ClientRequestException -> {
+            val statusCode = e.response.status.value
+            val errorBody = e.response.bodyAsText()
+            mapHttpError(statusCode, errorBody)
+        }
+
+        is ServerResponseException -> {
+            val statusCode = e.response.status.value
+            val errorBody = e.response.bodyAsText()
+            mapHttpError(statusCode, errorBody)
+        }
+
         is ApiException -> {
             AppError.Remote.Unknown(message = e.message)
         }
@@ -44,20 +56,8 @@ suspend fun mapKtorExceptionToAppError(e: Exception): AppError.Remote {
             mapHttpError(statusCode, errorBody)
         }
 
-        is ClientRequestException -> {
-            val statusCode = e.response.status.value
-            val errorBody = e.response.bodyAsText()
-            mapHttpError(statusCode, errorBody)
-        }
-
         is NullPointerException -> {
             AppError.Remote.Serialization
-        }
-
-        is ServerResponseException -> {
-            val statusCode = e.response.status.value
-            val errorBody = e.response.bodyAsText()
-            mapHttpError(statusCode, errorBody)
         }
 
         is kotlinx.serialization.SerializationException -> {
@@ -75,7 +75,7 @@ suspend fun mapKtorExceptionToAppError(e: Exception): AppError.Remote {
                 errJson.decodeFromString<MessageResponse?>(message ?: "")
 
             AppError.Remote.Unknown(
-//                message = decodeMessage?.message ?: AppError.Remote.RequestTimeout.toRes(),
+//                message = decodeMessage?.message ?: AppError.Remote.RequestTimeout.t(),
                 cause = e.cause
             )
         }
