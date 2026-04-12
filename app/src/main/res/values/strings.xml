@@ -26,4 +26,11 @@
     <string name="err_local_unknown_with_message">Something went wrong on this device</string>
     <string name="err_user_cancelled">User cancelled</string>
     <string name="err_credential_error">Create credential error</string>
+
+    <string name="asset_statements" translatable="false">
+      [{
+        \"include\": \"https://suzi-subdeltaic-ariah.ngrok-free.dev/.well-known/assetlinks.json\"
+      }]
+    </string>
+
 </resources>
