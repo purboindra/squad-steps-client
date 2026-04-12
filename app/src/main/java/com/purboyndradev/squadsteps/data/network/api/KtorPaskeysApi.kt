@@ -11,10 +11,7 @@ import io.ktor.http.appendPathSegments
 
 class KtorPaskeysApi(private val client: HttpClient) : PasskeysApi {
     override suspend fun generateRegisterOptions(params: GenerateRegisterRequestDto): ResponseDto<GenerateRegisterResponseDto> {
-        return client.post {
-            url {
-                appendPathSegments("/api/auth/passkeys/register/options")
-            }
+        return client.post("auth/passkeys/register/options") {
             setBody(params)
         }.body<ResponseDto<GenerateRegisterResponseDto>>()
     }

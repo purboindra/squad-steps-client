@@ -29,7 +29,6 @@ class ApiException(message: String) : Exception(message)
 
 suspend fun mapKtorExceptionToAppError(e: Exception): AppError.Remote {
     return when (e) {
-
         is ClientRequestException -> {
             val statusCode = e.response.status.value
             val errorBody = e.response.bodyAsText()
@@ -75,7 +74,7 @@ suspend fun mapKtorExceptionToAppError(e: Exception): AppError.Remote {
                 errJson.decodeFromString<MessageResponse?>(message ?: "")
 
             AppError.Remote.Unknown(
-//                message = decodeMessage?.message ?: AppError.Remote.RequestTimeout.t(),
+                message = decodeMessage?.message,
                 cause = e.cause
             )
         }

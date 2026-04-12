@@ -30,6 +30,8 @@ sealed interface AppError {
     sealed interface Local : AppError {
         data object DiskFull : Local
         data object InsufficientFunds : Local
+        data object UserCanceled : Local
+        data class CredentialError(val message: String? = null) : Local
         data class Unknown(val cause: Throwable? = null) : Local
     }
 }

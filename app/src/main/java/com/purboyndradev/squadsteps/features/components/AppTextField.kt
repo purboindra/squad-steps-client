@@ -26,7 +26,8 @@ fun AppTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    useBorder: Boolean = false
+    useBorder: Boolean = false,
+    singleLine: Boolean = false,
 ) {
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -56,6 +57,7 @@ fun AppTextField(
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
         ),
+        singleLine = singleLine,
         modifier = Modifier
             .fillMaxWidth()
             .border(

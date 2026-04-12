@@ -40,6 +40,8 @@ fun AppError.toUiText(): UiText = when (this) {
         when (this) {
             AppError.Local.DiskFull -> UiText.StringResource(R.string.err_disk_full)
             AppError.Local.InsufficientFunds -> UiText.StringResource(R.string.err_too_many_requests)
+            AppError.Local.UserCanceled -> UiText.StringResource(R.string.err_user_cancelled)
+            is AppError.Local.CredentialError -> UiText.DynamicString(message ?: "Credential error")
             is AppError.Local.Unknown ->
                 if (cause?.message.isNullOrBlank())
                     UiText.StringResource(R.string.err_remote_unknown)

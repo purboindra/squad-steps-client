@@ -24,4 +24,6 @@
     <string name="err_insufficient_funds">Insufficient funds.</string>
     <string name="err_local_unknown">Something went wrong on this device.</string>
     <string name="err_local_unknown_with_message">Something went wrong on this device</string>
+    <string name="err_user_cancelled">User cancelled</string>
+    <string name="err_credential_error">Create credential error</string>
 </resources>
