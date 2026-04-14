@@ -33,7 +33,6 @@ class AndroidPasskeyService(
     @SuppressLint("PublicKeyCredential")
     override suspend fun registerPasskey(options: GenerateRegisterOptions): Result<String, AppError> {
         return try {
-
             val requestDto = CredentialRequestJson(
                 challenge = options.challenge,
                 rp = RpJson(options.rp.name, options.rp.id),
