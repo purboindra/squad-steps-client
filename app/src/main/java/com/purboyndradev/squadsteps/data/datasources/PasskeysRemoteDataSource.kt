@@ -6,6 +6,7 @@ import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterResponseDt
 import com.purboyndradev.squadsteps.data.network.dtos.ResponseDto
 import com.purboyndradev.squadsteps.core.domain.Result
 import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterParams
+import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import com.purboyndradev.squadsteps.data.network.mapKtorExceptionToAppError
 
 class PasskeysRemoteDataSource(private val passkeysApi: PasskeysApi) {
@@ -14,6 +15,17 @@ class PasskeysRemoteDataSource(private val passkeysApi: PasskeysApi) {
     ): Result<ResponseDto<GenerateRegisterResponseDto>, AppError> {
         return try {
             val response = passkeysApi.generateRegisterOptions(params)
+            Result.Success(response)
+        } catch (e: Exception) {
+            Result.Error(mapKtorExceptionToAppError(e))
+        }
+    }
+
+    suspend fun verifyRegisterOptions(
+        params: VerifyRegisterOptionsParams
+    ): Result<ResponseDto<Any>, AppError> {
+        return try {
+            val response = passkeysApi.verifyRegisterOptions(params)
             Result.Success(response)
         } catch (e: Exception) {
             Result.Error(mapKtorExceptionToAppError(e))

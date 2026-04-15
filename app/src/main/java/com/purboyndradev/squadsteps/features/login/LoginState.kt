@@ -6,5 +6,6 @@ import androidx.compose.runtime.Stable
 data class AuthState(
     val error: String? = null,
     val success: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val data: Any? = null
 )

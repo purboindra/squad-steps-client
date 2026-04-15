@@ -76,6 +76,8 @@ fun LoginScreen(
         if (!authState.isLoading) {
             if (authState.error != null) {
                 snackbarHostState.showSnackbar(authState.error!!)
+            } else if (authState.success) {
+                snackbarHostState.showSnackbar("Success!")
             }
         }
     }

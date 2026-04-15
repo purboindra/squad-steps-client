@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.purboyndradev.squadsteps.core.domain.Result
 import com.purboyndradev.squadsteps.core.domain.toUiText
 import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterParams
+import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
 import com.purboyndradev.squadsteps.domain.services.PasskeyService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +51,29 @@ class LoginViewModel(
                         is Result.Success -> {
                             val passkeys = resultPasskeys.data
                             println("Passkeys is: $passkeys")
+//                            when (val verifyResult = passkeysRepository.verifyRegisterOptions(
+//                                VerifyRegisterOptionsParams(_email.value)
+//                            )) {
+//                                is Result.Success -> {
+//                                    println("Verify result: ${verifyResult.data}")
+//                                    _loginState.update {
+//                                        it.copy(
+//                                            success = true,
+//                                        )
+//                                    }
+//                                }
+//
+//                                is Result.Error -> {
+//                                    val message = verifyResult.error.toUiText().asString(context)
+//                                    _loginState.update {
+//                                        it.copy(
+//                                            isLoading = false,
+//                                            error = message
+//                                        )
+//                                    }
+//                                    return@launch
+//                                }
+//                            }
                         }
 
                         is Result.Error -> {

@@ -3,6 +3,7 @@ package com.purboyndradev.squadsteps.data.network.api
 import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterParams
 import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterResponseDto
 import com.purboyndradev.squadsteps.data.network.dtos.ResponseDto
+import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -14,5 +15,11 @@ class KtorPaskeysApi(private val client: HttpClient) : PasskeysApi {
         return client.post("auth/passkeys/register/options") {
             setBody(params)
         }.body<ResponseDto<GenerateRegisterResponseDto>>()
+    }
+
+    override suspend fun verifyRegisterOptions(params: VerifyRegisterOptionsParams): ResponseDto<Any> {
+        return client.post("auth/passkeys/register/verify") {
+            setBody(params)
+        }.body<ResponseDto<Any>>()
     }
 }
