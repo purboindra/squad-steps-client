@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.purboyndradev.squadsteps.core.domain.Result
 import com.purboyndradev.squadsteps.core.domain.toUiText
-import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterRequestDto
+import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterParams
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
 import com.purboyndradev.squadsteps.domain.services.PasskeyService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +38,7 @@ class LoginViewModel(
                 )
             }
 
-            val params = GenerateRegisterRequestDto(
+            val params = GenerateRegisterParams(
                 _email.value
             )
 

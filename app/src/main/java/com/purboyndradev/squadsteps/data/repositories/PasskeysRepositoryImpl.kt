@@ -4,7 +4,7 @@ import com.purboyndradev.squadsteps.core.domain.AppError
 import com.purboyndradev.squadsteps.core.domain.Result
 import com.purboyndradev.squadsteps.data.datasources.PasskeysRemoteDataSource
 import com.purboyndradev.squadsteps.data.network.DataNotFoundException
-import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterRequestDto
+import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterParams
 import com.purboyndradev.squadsteps.domain.mapper.toDomain
 import com.purboyndradev.squadsteps.domain.models.GenerateRegisterOptions
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
@@ -12,7 +12,7 @@ import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
 class PasskeysRepositoryImpl(
     private val passkeysRemoteDataSource: PasskeysRemoteDataSource
 ) : PasskeysRepository {
-    override suspend fun generateRegisterOptions(params: GenerateRegisterRequestDto): Result<GenerateRegisterOptions, AppError> {
+    override suspend fun generateRegisterOptions(params: GenerateRegisterParams): Result<GenerateRegisterOptions, AppError> {
         return when (val result = passkeysRemoteDataSource.generateRegisterOptions(params)) {
             is Result.Success -> {
                 val data = result.data
