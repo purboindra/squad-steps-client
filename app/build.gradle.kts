@@ -30,7 +30,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val baseUrl = localProperties.getProperty("BASE_URL") ?: "\"https://squad-steps-backend.netlify.app/api/\""
+        val baseUrl = localProperties.getProperty("BASE_URL")
+            ?: "\"https://squad-steps-backend.netlify.app/api/\""
         buildConfigField("String", "BASE_URL", baseUrl)
     }
 
@@ -41,7 +42,13 @@ android {
     buildTypes {
 
         debug {
-            BuildConfigField("String", "BASE_URL", "\"https://suzi-subdeltaic-ariah.ngrok-free.dev/api/\"")
+//            BuildConfigField("String", "BASE_URL", "\"https://suzi-subdeltaic-ariah.ngrok-free.dev/api/\"")
+//            BuildConfigField("String", "BASE_URL", "\"https://squad-steps-backend.netlify.app/api/\"")
+            BuildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://ba445f89--squad-steps-backend.netlify.live/api/\""
+            )
         }
 
         release {
@@ -50,7 +57,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://squad-steps-backend.netlify.app/api/\"")
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://squad-steps-backend.netlify.app/api/\""
+            )
         }
     }
     compileOptions {

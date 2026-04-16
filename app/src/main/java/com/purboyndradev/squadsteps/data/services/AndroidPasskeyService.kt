@@ -15,6 +15,7 @@ import androidx.credentials.exceptions.CreateCredentialCancellationException
 import androidx.credentials.exceptions.CreateCredentialException
 import com.purboyndradev.squadsteps.core.domain.AppError
 import com.purboyndradev.squadsteps.core.domain.Result
+import com.purboyndradev.squadsteps.data.network.dtos.PasskeyRegistrationResponseDto
 import com.purboyndradev.squadsteps.data.network.mapKtorExceptionToAppError
 import com.purboyndradev.squadsteps.domain.models.AuthenticatorSelectionJson
 import com.purboyndradev.squadsteps.domain.models.CredentialRequestJson
@@ -31,7 +32,7 @@ class AndroidPasskeyService(
     private val credentialManager: CredentialManager
 ) : PasskeyService {
     @SuppressLint("PublicKeyCredential")
-    override suspend fun registerPasskey(options: GenerateRegisterOptions): Result<String, AppError> {
+    override suspend fun registerPasskey(options: GenerateRegisterOptions): Result<PasskeyRegistrationResponseDto, AppError> {
         return try {
             val requestDto = CredentialRequestJson(
                 challenge = options.challenge,
@@ -73,7 +74,9 @@ class AndroidPasskeyService(
 
             if (result is CreatePublicKeyCredentialResponse) {
                 val registrationResponseJson = result.registrationResponseJson
-                return Result.Success(registrationResponseJson)
+                val registrationResponse =
+                    Json.decodeFromString<PasskeyRegistrationResponseDto>(registrationResponseJson)
+                return Result.Success(registrationResponse)
             } else {
                 return Result.Error(AppError.Local.Unknown(Exception("Unexpected credential type")))
             }

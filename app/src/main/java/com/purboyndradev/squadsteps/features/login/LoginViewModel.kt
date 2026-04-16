@@ -13,13 +13,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 class LoginViewModel(
     private val passkeysRepository: PasskeysRepository,
     private val passkeyService: PasskeyService
 ) : ViewModel() {
 
-    private val _loginState = MutableStateFlow<AuthState>(AuthState())
+    private val _loginState = MutableStateFlow(AuthState())
     val loginState = _loginState.asStateFlow()
 
     private val _email = MutableStateFlow("")
@@ -49,31 +50,47 @@ class LoginViewModel(
 
                     when (val resultPasskeys = passkeyService.registerPasskey(data)) {
                         is Result.Success -> {
-                            val passkeys = resultPasskeys.data
-                            println("Passkeys is: $passkeys")
-//                            when (val verifyResult = passkeysRepository.verifyRegisterOptions(
-//                                VerifyRegisterOptionsParams(_email.value)
-//                            )) {
-//                                is Result.Success -> {
-//                                    println("Verify result: ${verifyResult.data}")
-//                                    _loginState.update {
-//                                        it.copy(
-//                                            success = true,
-//                                        )
-//                                    }
-//                                }
-//
-//                                is Result.Error -> {
-//                                    val message = verifyResult.error.toUiText().asString(context)
-//                                    _loginState.update {
-//                                        it.copy(
-//                                            isLoading = false,
-//                                            error = message
-//                                        )
-//                                    }
-//                                    return@launch
-//                                }
-//                            }
+                            val passkey = resultPasskeys.data
+                            println("Passkeys is: $passkey")
+
+                            val verifyRegisterOptionParams = VerifyRegisterOptionsParams(
+                                email = _email.value,
+                                id = passkey.id,
+                                attestationObject = passkey.response.attestationObject,
+                                type = passkey.type,
+                                transports = passkey.response.transports,
+                                clientDataJSON = passkey.response.clientDataJSON,
+                                rawId = passkey.rawId,
+                                clientExtensionResults = passkey.clientExtensionResults,
+                            )
+
+                            println(
+                                "Verify register options params: $verifyRegisterOptionParams"
+                            )
+
+                            when (val verifyResult = passkeysRepository.verifyRegisterOptions(
+                                verifyRegisterOptionParams
+                            )) {
+                                is Result.Success -> {
+                                    println("Verify result: ${verifyResult.data}")
+                                    _loginState.update {
+                                        it.copy(
+                                            success = true,
+                                        )
+                                    }
+                                }
+
+                                is Result.Error -> {
+                                    val message = verifyResult.error.toUiText().asString(context)
+                                    _loginState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            error = message
+                                        )
+                                    }
+                                    return@launch
+                                }
+                            }
                         }
 
                         is Result.Error -> {
