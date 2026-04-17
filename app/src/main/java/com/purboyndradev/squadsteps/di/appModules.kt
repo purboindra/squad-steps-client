@@ -3,11 +3,16 @@ package com.purboyndradev.squadsteps.di
 import androidx.credentials.CredentialManager
 import com.purboyndradev.squadsteps.BuildConfig
 import com.purboyndradev.squadsteps.data.datasources.PasskeysRemoteDataSource
+import com.purboyndradev.squadsteps.data.datasources.UsersRemoteDataSource
 import com.purboyndradev.squadsteps.data.network.api.KtorPaskeysApi
+import com.purboyndradev.squadsteps.data.network.api.KtorUsersAPi
 import com.purboyndradev.squadsteps.data.network.api.PasskeysApi
+import com.purboyndradev.squadsteps.data.network.api.UsersApi
 import com.purboyndradev.squadsteps.data.repositories.PasskeysRepositoryImpl
+import com.purboyndradev.squadsteps.data.repositories.UsersRepositoryImpl
 import com.purboyndradev.squadsteps.data.services.AndroidPasskeyService
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
+import com.purboyndradev.squadsteps.domain.repositories.UsersRepository
 import com.purboyndradev.squadsteps.domain.services.PasskeyService
 import com.purboyndradev.squadsteps.features.login.LoginViewModel
 import org.koin.dsl.module
@@ -61,9 +66,15 @@ val appModules = module {
     single<PasskeysApi> {
         KtorPaskeysApi(get())
     }
+    single<UsersApi> {
+        KtorUsersAPi(get())
+    }
 
     single {
         PasskeysRemoteDataSource(get())
+    }
+    single {
+        UsersRemoteDataSource(get())
     }
 
     single<PasskeysRepository> {
@@ -71,8 +82,13 @@ val appModules = module {
             get()
         )
     }
+    single<UsersRepository> {
+        UsersRepositoryImpl(
+            get()
+        )
+    }
 
     viewModel {
-        LoginViewModel(get(), get())
+        LoginViewModel(get(), get(), get())
     }
 }

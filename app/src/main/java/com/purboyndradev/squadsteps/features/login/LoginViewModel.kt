@@ -8,6 +8,7 @@ import com.purboyndradev.squadsteps.core.domain.toUiText
 import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterParams
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
+import com.purboyndradev.squadsteps.domain.repositories.UsersRepository
 import com.purboyndradev.squadsteps.domain.services.PasskeyService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +18,7 @@ import kotlinx.serialization.json.Json
 
 class LoginViewModel(
     private val passkeysRepository: PasskeysRepository,
+    private val usersRepository: UsersRepository,
     private val passkeyService: PasskeyService
 ) : ViewModel() {
 
