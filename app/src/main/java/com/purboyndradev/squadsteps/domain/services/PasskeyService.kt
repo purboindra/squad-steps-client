@@ -7,4 +7,5 @@ import com.purboyndradev.squadsteps.domain.models.GenerateRegisterOptions
 
 interface PasskeyService {
     suspend fun registerPasskey(options: GenerateRegisterOptions): Result<PasskeyRegistrationResponseDto, AppError>
+
 }

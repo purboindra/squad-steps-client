@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.purboyndradev.squadsteps.core.domain.Result
 import com.purboyndradev.squadsteps.core.domain.toUiText
 import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterParams
+import com.purboyndradev.squadsteps.data.network.dtos.GetOptionsParams
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
 import com.purboyndradev.squadsteps.domain.repositories.UsersRepository
@@ -34,96 +35,85 @@ class LoginViewModel(
         }
     }
 
-    fun generateRegisterOptions(context: Context) {
+    fun getOptions() {
         viewModelScope.launch {
-            _loginState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
+            _loginState.update { it.copy(isLoading = true, error = null) }
 
-            val params = GenerateRegisterParams(
+            val params = GetOptionsParams(
                 _email.value
             )
 
-            when (val result = passkeysRepository.generateRegisterOptions(params)) {
-                is Result.Success -> {
-                    val data = result.data
+            val response = passkeysRepository.getOptions(params)
 
-                    when (val resultPasskeys = passkeyService.registerPasskey(data)) {
-                        is Result.Success -> {
-                            val passkey = resultPasskeys.data
-                            println("Passkeys is: $passkey")
-
-                            val verifyRegisterOptionParams = VerifyRegisterOptionsParams(
-                                email = _email.value,
-                                id = passkey.id,
-                                attestationObject = passkey.response.attestationObject,
-                                type = passkey.type,
-                                transports = passkey.response.transports,
-                                clientDataJSON = passkey.response.clientDataJSON,
-                                rawId = passkey.rawId,
-                                clientExtensionResults = passkey.clientExtensionResults,
-                            )
-
-                            println(
-                                "Verify register options params: $verifyRegisterOptionParams"
-                            )
-
-                            when (val verifyResult = passkeysRepository.verifyRegisterOptions(
-                                verifyRegisterOptionParams
-                            )) {
-                                is Result.Success -> {
-                                    println("Verify result: ${verifyResult.data}")
-                                    _loginState.update {
-                                        it.copy(
-                                            success = true,
-                                        )
-                                    }
-                                }
-
-                                is Result.Error -> {
-                                    val message = verifyResult.error.toUiText().asString(context)
-                                    _loginState.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            error = message
-                                        )
-                                    }
-                                    return@launch
-                                }
-                            }
-                        }
-
-                        is Result.Error -> {
-                            val message = resultPasskeys.error.toUiText().asString(context)
-                            _loginState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    error = message
-                                )
-                            }
-                            return@launch
-                        }
-                    }
+            if (response is Result.Error) {
+                _loginState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = response.error.toUiText()
+                    )
                 }
-
-                is Result.Error -> {
-                    _loginState.update {
-                        it.copy(
-                            error = result.error.toUiText().asString(context)
-                        )
-                    }
-                }
+                return@launch
             }
 
-            _loginState.update {
-                it.copy(
-                    isLoading = false
-                )
-            }
+            val responseOptions = (response as Result.Success).data
 
+            val type = responseOptions.type
+
+            if (type == "REGISTER") {
+                generateRegisterOptions()
+            } else {
+                println("Type is LOGIN")
+            }
         }
     }
 
+    suspend fun generateRegisterOptions() {
+
+        val params = GenerateRegisterParams(_email.value)
+
+        val optionsResult = passkeysRepository.generateRegisterOptions(params)
+        if (optionsResult is Result.Error) {
+            _loginState.update {
+                it.copy(
+                    isLoading = false,
+                    error = optionsResult.error.toUiText()
+                )
+            }
+            return
+        }
+
+        val optionsData = (optionsResult as Result.Success).data
+
+        val passkeyResult = passkeyService.registerPasskey(optionsData)
+        if (passkeyResult is Result.Error) {
+            _loginState.update {
+                it.copy(isLoading = false, error = passkeyResult.error.toUiText())
+            }
+            return
+        }
+
+        val passkey = (passkeyResult as Result.Success).data
+        val verifyParams = VerifyRegisterOptionsParams(
+            email = _email.value,
+            id = passkey.id,
+            attestationObject = passkey.response.attestationObject,
+            type = passkey.type,
+            transports = passkey.response.transports,
+            clientDataJSON = passkey.response.clientDataJSON,
+            rawId = passkey.rawId,
+            clientExtensionResults = passkey.clientExtensionResults,
+        )
+
+        val verifyResult = usersRepository.register(verifyParams)
+        if (verifyResult is Result.Error) {
+            _loginState.update {
+                it.copy(isLoading = false, error = verifyResult.error.toUiText())
+            }
+            return
+        }
+
+        _loginState.update {
+            it.copy(isLoading = false, success = true)
+        }
+    }
 }

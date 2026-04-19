@@ -17,15 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,7 +45,6 @@ import com.purboyndradev.squadsteps.features.components.CircleAvatar
 import com.purboyndradev.squadsteps.features.components.PrimaryButton
 import com.purboyndradev.squadsteps.ui.theme.AppAssets
 import com.purboyndradev.squadsteps.ui.theme.BlackColor
-import com.purboyndradev.squadsteps.ui.theme.DarkGreenColor
 import com.purboyndradev.squadsteps.ui.theme.GreyColor
 import com.purboyndradev.squadsteps.ui.theme.GreyColor2
 import com.purboyndradev.squadsteps.ui.theme.PrimaryColor
@@ -75,7 +70,7 @@ fun LoginScreen(
     LaunchedEffect(authState) {
         if (!authState.isLoading) {
             if (authState.error != null) {
-                snackbarHostState.showSnackbar(authState.error!!)
+                snackbarHostState.showSnackbar(authState.error!!.asString(context))
             } else if (authState.success) {
                 snackbarHostState.showSnackbar("Success!")
             }
@@ -146,7 +141,7 @@ fun LoginScreen(
 
                 PrimaryButton(
                     onClick = {
-                        loginViewModel.generateRegisterOptions(context)
+                        loginViewModel.getOptions()
                     },
                     enabled = !isLoading,
                     label = "Sign in with Passkey",
