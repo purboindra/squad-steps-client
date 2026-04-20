@@ -7,6 +7,7 @@ import com.purboyndradev.squadsteps.core.domain.Result
 import com.purboyndradev.squadsteps.core.domain.toUiText
 import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterParams
 import com.purboyndradev.squadsteps.data.network.dtos.GetOptionsParams
+import com.purboyndradev.squadsteps.data.network.dtos.LoginPasskeyParams
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
 import com.purboyndradev.squadsteps.domain.repositories.UsersRepository
@@ -62,7 +63,15 @@ class LoginViewModel(
             if (type == "REGISTER") {
                 generateRegisterOptions()
             } else {
-                println("Type is LOGIN")
+                println("Type is LOGIN: ${responseOptions.options}")
+
+                val params = LoginPasskeyParams(
+                    challenge = "",
+                    allowCredentials = emptyList(),
+                    rpId = ""
+                )
+
+                passkeyService.loginPasskey(params)
             }
         }
     }

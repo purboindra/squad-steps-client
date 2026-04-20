@@ -2,11 +2,13 @@ package com.purboyndradev.squadsteps.data.services
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.credentials.CreateCredentialRequest
+import android.util.Log
 import androidx.credentials.CreatePublicKeyCredentialRequest
 import androidx.credentials.CreatePublicKeyCredentialResponse
 import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
 import androidx.credentials.GetPasswordOption
 import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PasswordCredential
@@ -17,13 +19,14 @@ import com.purboyndradev.squadsteps.core.domain.AppError
 import com.purboyndradev.squadsteps.core.domain.Result
 import com.purboyndradev.squadsteps.data.network.dtos.PasskeyRegistrationResponseDto
 import com.purboyndradev.squadsteps.data.network.mapKtorExceptionToAppError
-import com.purboyndradev.squadsteps.domain.models.AuthenticatorSelectionJson
-import com.purboyndradev.squadsteps.domain.models.CredentialRequestJson
-import com.purboyndradev.squadsteps.domain.models.ExcludeCredentialJson
+import com.purboyndradev.squadsteps.data.network.dtos.AuthenticatorSelectionJson
+import com.purboyndradev.squadsteps.data.network.dtos.CredentialRequestJson
+import com.purboyndradev.squadsteps.data.network.dtos.ExcludeCredentialJson
+import com.purboyndradev.squadsteps.data.network.dtos.LoginPasskeyParams
 import com.purboyndradev.squadsteps.domain.models.GenerateRegisterOptions
-import com.purboyndradev.squadsteps.domain.models.PubKeyCredParamJson
-import com.purboyndradev.squadsteps.domain.models.RpJson
-import com.purboyndradev.squadsteps.domain.models.UserJson
+import com.purboyndradev.squadsteps.data.network.dtos.PubKeyCredParamJson
+import com.purboyndradev.squadsteps.data.network.dtos.RpJson
+import com.purboyndradev.squadsteps.data.network.dtos.UserJson
 import com.purboyndradev.squadsteps.domain.services.PasskeyService
 import kotlinx.serialization.json.Json
 
@@ -36,26 +39,30 @@ class AndroidPasskeyService(
         return try {
             val requestDto = CredentialRequestJson(
                 challenge = options.challenge,
-                rp = RpJson(options.rp.name, options.rp.id),
-                user = UserJson(options.user.id, options.user.name, options.user.displayName),
-                pubKeyCredParams = options.pubKeyCredParams.map {
+                rp = RpJson(options.rp?.name ?: "", options.rp?.id ?: ""),
+                user = UserJson(
+                    options.user?.id ?: "",
+                    options.user?.name ?: "",
+                    options.user?.displayName ?: ""
+                ),
+                pubKeyCredParams = if (options.pubKeyCredParams != null) options.pubKeyCredParams.map {
                     PubKeyCredParamJson(
                         it.type,
                         it.alg
                     )
-                },
+                } else emptyList(),
                 timeout = options.timeout,
-                attestation = options.attestation,
-                excludeCredentials = options.excludeCredentials.map {
+                attestation = options.attestation ?: "",
+                excludeCredentials = if (options.excludeCredentials != null) options.excludeCredentials.map {
                     ExcludeCredentialJson(
                         it.id,
                         it.type,
                     )
-                },
+                } else emptyList(),
                 authenticatorSelection = AuthenticatorSelectionJson(
-                    options.authenticatorSelection.requireResidentKey,
-                    options.authenticatorSelection.residentKey,
-                    options.authenticatorSelection.userVerification,
+                    options.authenticatorSelection?.requireResidentKey ?: false,
+                    options.authenticatorSelection?.residentKey ?: "",
+                    options.authenticatorSelection?.userVerification ?: "",
                 ),
                 hints = options.hints
             )
@@ -88,6 +95,55 @@ class AndroidPasskeyService(
             Result.Error(AppError.Local.CredentialError(e.message ?: "Passkey creation failed"))
         } catch (e: Exception) {
             Result.Error(mapKtorExceptionToAppError(e))
+        }
+    }
+
+    override suspend fun loginPasskey(params: LoginPasskeyParams): Result<Any, AppError> {
+        try {
+            val getPasswordOption = GetPasswordOption()
+
+            val getPublicKeyCredentialOption = GetPublicKeyCredentialOption(
+                requestJson = Json.encodeToString(params)
+            )
+
+            val credentialRequest = GetCredentialRequest(
+                listOf(getPasswordOption, getPublicKeyCredentialOption),
+            )
+
+            println("Response login passkey: ${credentialRequest.credentialOptions}")
+
+            return Result.Success(credentialRequest.credentialOptions)
+
+        } catch (e: Exception) {
+            println("Error while login passkey: ${e.message}")
+            return Result.Error(mapKtorExceptionToAppError(e))
+        }
+    }
+
+    fun handleSignIn(result: GetCredentialResponse) {
+        // Handle the successfully returned credential.
+        val credential = result.credential
+
+        when (credential) {
+            is PublicKeyCredential -> {
+                val responseJson = credential.authenticationResponseJson
+                // Share responseJson i.e. a GetCredentialResponse on your server to
+                // validate and  authenticate
+            }
+
+            is PasswordCredential -> {
+                val username = credential.id
+                val password = credential.password
+                // Use id and password to send to your server to validate
+                // and authenticate
+            }
+
+            is CustomCredential -> {
+
+            }
+            else -> {
+                Log.e("", "Unexpected type of credential")
+            }
         }
     }
 }

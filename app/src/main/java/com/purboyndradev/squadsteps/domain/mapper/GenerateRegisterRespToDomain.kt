@@ -19,8 +19,8 @@ fun GenerateRegisterResponseDto.toDomain(): GenerateRegisterOptions {
 
     return GenerateRegisterOptions(
         challenge = challenge ?: throw IllegalStateException("Missing challenge from server"),
-        rp = rp?.toDomain() ?: throw IllegalStateException("Missing Relying Party (rp) info"),
-        user = user?.toDomain() ?: throw IllegalStateException("Missing User info"),
+        rp = rp?.toDomain(),
+        user = user?.toDomain(),
         pubKeyCredParams = pubKeyCredParams?.map { it.toDomain() } ?: emptyList(),
         timeout = timeout ?: 60000L,
         attestation = attestation ?: "none",
@@ -32,7 +32,15 @@ fun GenerateRegisterResponseDto.toDomain(): GenerateRegisterOptions {
             requireResidentKey = false
         ),
         extensions = extensions?.toDomain(),
-        hints = hints ?: emptyList()
+        hints = hints ?: emptyList(),
+        allowCredentials = allowCredentials?.map {
+            com.purboyndradev.squadsteps.domain.models.AllowCredential(
+                id = it.id ?: "",
+                type = it.type ?: "public-key",
+                transports = it.transports ?: emptyList()
+            )
+        },
+        userVerification = userVerification
     )
 }
 

@@ -5,16 +5,19 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GenerateRegisterResponseDto(
-    @SerialName("challenge") val challenge: String?,
-    @SerialName("rp") val rp: RpDto?,
-    @SerialName("user") val user: UserDto?,
-    @SerialName("pubKeyCredParams") val pubKeyCredParams: List<PubKeyCredParamDto>? = emptyList(),
-    @SerialName("timeout") val timeout: Long?,
-    @SerialName("attestation") val attestation: String?,
-    @SerialName("excludeCredentials") val excludeCredentials: List<ExcludeCredentialDto>? = emptyList(),
-    @SerialName("authenticatorSelection") val authenticatorSelection: AuthenticatorSelectionDto?,
-    @SerialName("extensions") val extensions: ExtensionsDto?,
-    @SerialName("hints") val hints: List<String>? = emptyList()
+    val challenge: String? = null,
+    val rp: RpDto? = null,
+    val user: UserDto? = null,
+    val pubKeyCredParams: List<PubKeyCredParamDto>? = emptyList(),
+    val timeout: Long?,
+    val attestation: String? = null,
+    val excludeCredentials: List<ExcludeCredentialDto>? = emptyList(),
+    val authenticatorSelection: AuthenticatorSelectionDto? = null,
+    val extensions: ExtensionsDto? = null,
+    val hints: List<String>? = emptyList(),
+    val rpId: String? = null,
+    val userVerification: String? = null,
+    val allowCredentials: List<ExcludeCredentialDto>? = emptyList(),
 )
 
 @Serializable

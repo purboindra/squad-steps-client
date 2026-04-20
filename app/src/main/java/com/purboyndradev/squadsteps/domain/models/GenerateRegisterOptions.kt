@@ -2,15 +2,24 @@ package com.purboyndradev.squadsteps.domain.models
 
 data class GenerateRegisterOptions(
     val challenge: String,
-    val rp: RelyingParty,
-    val user: UserInfo,
-    val pubKeyCredParams: List<PubKeyCredParam>,
+    val rp: RelyingParty? = null,
+    val user: UserInfo? = null,
+    val pubKeyCredParams: List<PubKeyCredParam>? = null,
     val timeout: Long,
-    val attestation: String,
-    val excludeCredentials: List<ExcludeCredential>,
-    val authenticatorSelection: AuthenticatorSelection,
+    val attestation: String? = null,
+    val excludeCredentials: List<ExcludeCredential>? = null,
+    val authenticatorSelection: AuthenticatorSelection? = null,
     val extensions: Extensions?,
-    val hints: List<String>
+    val hints: List<String>,
+    /// FOR LOGIN
+    val allowCredentials: List<AllowCredential>? = null,
+    val userVerification: String? = null
+)
+
+data class AllowCredential(
+    val id: String,
+    val transports: List<String>,
+    val type: String,
 )
 
 data class RelyingParty(

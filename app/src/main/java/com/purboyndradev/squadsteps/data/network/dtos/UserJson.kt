@@ -1,4 +1,4 @@
-package com.purboyndradev.squadsteps.domain.models
+package com.purboyndradev.squadsteps.data.network.dtos
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
