@@ -11,6 +11,7 @@ data class GenerateRegisterOptions(
     val authenticatorSelection: AuthenticatorSelection? = null,
     val extensions: Extensions?,
     val hints: List<String>,
+    val rpId: String? = null,
     /// FOR LOGIN
     val allowCredentials: List<AllowCredential>? = null,
     val userVerification: String? = null

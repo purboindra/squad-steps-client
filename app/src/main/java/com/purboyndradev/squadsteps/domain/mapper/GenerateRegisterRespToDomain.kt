@@ -33,6 +33,7 @@ fun GenerateRegisterResponseDto.toDomain(): GenerateRegisterOptions {
         ),
         extensions = extensions?.toDomain(),
         hints = hints ?: emptyList(),
+        rpId = rpId,
         allowCredentials = allowCredentials?.map {
             com.purboyndradev.squadsteps.domain.models.AllowCredential(
                 id = it.id ?: "",

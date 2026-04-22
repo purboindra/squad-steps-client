@@ -70,11 +70,12 @@ suspend fun mapKtorExceptionToAppError(e: Exception): AppError.Remote {
         else -> {
             val message = e.message
 
-            val decodeMessage: MessageResponse? =
+            val decodeMessage: MessageResponse? = runCatching {
                 errJson.decodeFromString<MessageResponse?>(message ?: "")
+            }.getOrNull()
 
             AppError.Remote.Unknown(
-                message = decodeMessage?.message,
+                message = decodeMessage?.message ?: message,
                 cause = e.cause
             )
         }

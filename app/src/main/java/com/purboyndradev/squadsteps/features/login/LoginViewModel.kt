@@ -8,6 +8,8 @@ import com.purboyndradev.squadsteps.core.domain.toUiText
 import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterParams
 import com.purboyndradev.squadsteps.data.network.dtos.GetOptionsParams
 import com.purboyndradev.squadsteps.data.network.dtos.LoginPasskeyParams
+import com.purboyndradev.squadsteps.data.network.dtos.VerifyAuthOptionsParams
+import com.purboyndradev.squadsteps.data.network.dtos.VerifyAuthParams
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
 import com.purboyndradev.squadsteps.domain.repositories.UsersRepository
@@ -65,15 +67,61 @@ class LoginViewModel(
             } else {
                 println("Type is LOGIN: ${responseOptions.options}")
 
+                val options = responseOptions.options
+
+                val allowCredentials = options.allowCredentials?.map {
+                    it.id
+                }
+
                 val params = LoginPasskeyParams(
-                    challenge = "",
-                    allowCredentials = emptyList(),
-                    rpId = ""
+                    challenge = options.challenge,
+                    allowCredentials = allowCredentials ?: emptyList(),
+                    rpId = options.rpId ?: options.rp?.id ?: "",
                 )
 
-                passkeyService.loginPasskey(params)
+                when (val loginResult = passkeyService.loginPasskey(params)) {
+                    is Result.Success -> {
+                        verifyAuth(loginResult.data)
+                    }
+
+                    is Result.Error -> {
+                        _loginState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = loginResult.error.toUiText()
+                            )
+                        }
+                    }
+                }
             }
         }
+    }
+
+    suspend fun verifyAuth(options: VerifyAuthOptionsParams) {
+        val email = _email.value
+
+        val verifyParams = VerifyAuthParams(
+            email,
+            options
+        )
+
+        when (val result = passkeysRepository.verifyAuth(verifyParams)) {
+            is Result.Success -> {
+                val data = result.data
+                println("Result verify auth: $data")
+            }
+
+            is Result.Error -> {
+                _loginState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = result.error.toUiText()
+                    )
+                }
+                return
+            }
+        }
+
     }
 
     suspend fun generateRegisterOptions() {

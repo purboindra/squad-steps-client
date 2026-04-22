@@ -23,6 +23,8 @@ import com.purboyndradev.squadsteps.data.network.dtos.AuthenticatorSelectionJson
 import com.purboyndradev.squadsteps.data.network.dtos.CredentialRequestJson
 import com.purboyndradev.squadsteps.data.network.dtos.ExcludeCredentialJson
 import com.purboyndradev.squadsteps.data.network.dtos.LoginPasskeyParams
+import com.purboyndradev.squadsteps.data.network.dtos.LoginRequestJson
+import com.purboyndradev.squadsteps.data.network.dtos.VerifyAuthOptionsParams
 import com.purboyndradev.squadsteps.domain.models.GenerateRegisterOptions
 import com.purboyndradev.squadsteps.data.network.dtos.PubKeyCredParamJson
 import com.purboyndradev.squadsteps.data.network.dtos.RpJson
@@ -39,7 +41,10 @@ class AndroidPasskeyService(
         return try {
             val requestDto = CredentialRequestJson(
                 challenge = options.challenge,
-                rp = RpJson(options.rp?.name ?: "", options.rp?.id ?: ""),
+                rp = RpJson(
+                    options.rp?.name ?: "Squad Steps",
+                    options.rpId ?: options.rp?.id ?: ""
+                ),
                 user = UserJson(
                     options.user?.id ?: "",
                     options.user?.name ?: "",
@@ -98,22 +103,53 @@ class AndroidPasskeyService(
         }
     }
 
-    override suspend fun loginPasskey(params: LoginPasskeyParams): Result<Any, AppError> {
+    override suspend fun loginPasskey(params: LoginPasskeyParams): Result<VerifyAuthOptionsParams, AppError> {
         try {
             val getPasswordOption = GetPasswordOption()
 
+            val loginRequest = LoginRequestJson(
+                challenge = params.challenge,
+                rpId = params.rpId,
+                allowCredentials = params.allowCredentials.map {
+                    ExcludeCredentialJson(it, "public-key")
+                }
+            )
+
+            val requestJson = Json.encodeToString(loginRequest)
+
             val getPublicKeyCredentialOption = GetPublicKeyCredentialOption(
-                requestJson = Json.encodeToString(params)
+                requestJson = requestJson
             )
 
             val credentialRequest = GetCredentialRequest(
                 listOf(getPasswordOption, getPublicKeyCredentialOption),
             )
 
-            println("Response login passkey: ${credentialRequest.credentialOptions}")
+            val result = credentialManager.getCredential(
+                context = context,
+                request = credentialRequest
+            )
 
-            return Result.Success(credentialRequest.credentialOptions)
+            println("Result getCredential: ${result.credential.type}")
 
+            when (val credential = result.credential) {
+                is PublicKeyCredential -> {
+                    val responseJson = credential.authenticationResponseJson
+                    val authResponse = Json.decodeFromString<VerifyAuthOptionsParams>(responseJson)
+                    println("Passkey Login Success! Send this to backend: $responseJson")
+
+                    return Result.Success(authResponse)
+                }
+
+                is PasswordCredential -> {
+                    return Result.Error(AppError.Local.Unknown(Exception("Password credential not yet supported in this flow")))
+                }
+
+                else -> {
+                    println("Unexpected credential type")
+                    return Result.Error(AppError.Local.Unknown(Exception("Unexpected credential type")))
+                }
+            }
         } catch (e: Exception) {
             println("Error while login passkey: ${e.message}")
             return Result.Error(mapKtorExceptionToAppError(e))
@@ -141,6 +177,7 @@ class AndroidPasskeyService(
             is CustomCredential -> {
 
             }
+
             else -> {
                 Log.e("", "Unexpected type of credential")
             }
