@@ -5,6 +5,7 @@ import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterResponseDt
 import com.purboyndradev.squadsteps.data.network.dtos.GetOptionsParams
 import com.purboyndradev.squadsteps.data.network.dtos.GetOptionsResponseDto
 import com.purboyndradev.squadsteps.data.network.dtos.ResponseDto
+import com.purboyndradev.squadsteps.data.network.dtos.TokenDto
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyAuthParams
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import io.ktor.client.HttpClient
@@ -13,7 +14,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.appendPathSegments
 
-class KtorPaskeysApi(private val client: HttpClient) : PasskeysApi {
+class KtorPasskeysApi(private val client: HttpClient) : PasskeysApi {
     override suspend fun generateRegisterOptions(params: GenerateRegisterParams): ResponseDto<GenerateRegisterResponseDto> {
         return client.post("auth/passkeys/register/options") {
             setBody(params)
@@ -34,10 +35,9 @@ class KtorPaskeysApi(private val client: HttpClient) : PasskeysApi {
         }.body<ResponseDto<GetOptionsResponseDto>>()
     }
 
-    override suspend fun verifyAuth(params: VerifyAuthParams): ResponseDto<Any> {
+    override suspend fun verifyAuth(params: VerifyAuthParams): ResponseDto<TokenDto> {
         return client.post("auth/passkeys/verify/response") {
             setBody(params)
-        }.body<ResponseDto<Any>>()
+        }.body<ResponseDto<TokenDto>>()
     }
-
 }

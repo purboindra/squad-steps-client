@@ -5,6 +5,7 @@ import com.purboyndradev.squadsteps.data.network.dtos.GenerateRegisterResponseDt
 import com.purboyndradev.squadsteps.data.network.dtos.GetOptionsParams
 import com.purboyndradev.squadsteps.data.network.dtos.GetOptionsResponseDto
 import com.purboyndradev.squadsteps.data.network.dtos.ResponseDto
+import com.purboyndradev.squadsteps.data.network.dtos.TokenDto
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyAuthParams
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 
@@ -12,6 +13,6 @@ interface PasskeysApi {
     suspend fun generateRegisterOptions(params: GenerateRegisterParams): ResponseDto<GenerateRegisterResponseDto>
     suspend fun verifyRegisterOptions(params: VerifyRegisterOptionsParams): ResponseDto<Any>
     suspend fun getOptions(params: GetOptionsParams): ResponseDto<GetOptionsResponseDto>
-    suspend fun verifyAuth(params: VerifyAuthParams): ResponseDto<Any>
+    suspend fun verifyAuth(params: VerifyAuthParams): ResponseDto<TokenDto>
 //    suspend fun generateAuthOptions(email: String): ResponseDto<A>
 }

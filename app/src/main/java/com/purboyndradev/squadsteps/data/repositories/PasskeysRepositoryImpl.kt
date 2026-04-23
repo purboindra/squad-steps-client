@@ -10,6 +10,7 @@ import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParam
 import com.purboyndradev.squadsteps.domain.mapper.toDomain
 import com.purboyndradev.squadsteps.domain.models.GenerateRegisterOptions
 import com.purboyndradev.squadsteps.domain.models.GetOptions
+import com.purboyndradev.squadsteps.domain.models.TokenModel
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
 
 class PasskeysRepositoryImpl(
@@ -66,11 +67,16 @@ class PasskeysRepositoryImpl(
         }
     }
 
-    override suspend fun verifyAuth(params: VerifyAuthParams): Result<Any, AppError> {
+    override suspend fun verifyAuth(params: VerifyAuthParams): Result<TokenModel, AppError> {
         return when (val result = passkeysRemoteDataSource.verifyAuth(params)) {
             is Result.Success -> {
                 val data = result.data
-                Result.Success(data)
+                val token = data.data?.toDomain()
+                if (token != null) {
+                    Result.Success(token)
+                } else {
+                    Result.Error(AppError.Remote.NotFound)
+                }
             }
 
             is Result.Error -> {

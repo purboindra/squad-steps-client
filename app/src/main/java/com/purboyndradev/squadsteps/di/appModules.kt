@@ -4,7 +4,7 @@ import androidx.credentials.CredentialManager
 import com.purboyndradev.squadsteps.BuildConfig
 import com.purboyndradev.squadsteps.data.datasources.PasskeysRemoteDataSource
 import com.purboyndradev.squadsteps.data.datasources.UsersRemoteDataSource
-import com.purboyndradev.squadsteps.data.network.api.KtorPaskeysApi
+import com.purboyndradev.squadsteps.data.network.api.KtorPasskeysApi
 import com.purboyndradev.squadsteps.data.network.api.KtorUsersAPi
 import com.purboyndradev.squadsteps.data.network.api.PasskeysApi
 import com.purboyndradev.squadsteps.data.network.api.UsersApi
@@ -64,7 +64,7 @@ val appModules = module {
     }
 
     single<PasskeysApi> {
-        KtorPaskeysApi(get())
+        KtorPasskeysApi(get())
     }
     single<UsersApi> {
         KtorUsersAPi(get())

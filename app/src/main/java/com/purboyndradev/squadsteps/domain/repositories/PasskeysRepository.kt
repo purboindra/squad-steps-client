@@ -8,6 +8,7 @@ import com.purboyndradev.squadsteps.data.network.dtos.VerifyAuthParams
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import com.purboyndradev.squadsteps.domain.models.GenerateRegisterOptions
 import com.purboyndradev.squadsteps.domain.models.GetOptions
+import com.purboyndradev.squadsteps.domain.models.TokenModel
 
 interface PasskeysRepository {
     suspend fun generateRegisterOptions(
@@ -24,5 +25,5 @@ interface PasskeysRepository {
 
     suspend fun verifyAuth(
         params: VerifyAuthParams
-    ): Result<Any, AppError>
+    ): Result<TokenModel, AppError>
 }
