@@ -11,6 +11,7 @@ import com.purboyndradev.squadsteps.data.network.api.UsersApi
 import com.purboyndradev.squadsteps.data.repositories.PasskeysRepositoryImpl
 import com.purboyndradev.squadsteps.data.repositories.UsersRepositoryImpl
 import com.purboyndradev.squadsteps.data.services.AndroidPasskeyService
+import com.purboyndradev.squadsteps.data.services.PreferenceService
 import com.purboyndradev.squadsteps.domain.repositories.PasskeysRepository
 import com.purboyndradev.squadsteps.domain.repositories.UsersRepository
 import com.purboyndradev.squadsteps.domain.services.PasskeyService
@@ -62,6 +63,9 @@ val appModules = module {
             credentialManager = get()
         )
     }
+    single {
+        PreferenceService(androidContext())
+    }
 
     single<PasskeysApi> {
         KtorPasskeysApi(get())
@@ -84,6 +88,7 @@ val appModules = module {
     }
     single<UsersRepository> {
         UsersRepositoryImpl(
+            get(),
             get()
         )
     }

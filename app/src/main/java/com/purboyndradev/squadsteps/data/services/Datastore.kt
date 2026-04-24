@@ -1,16 +1,10 @@
 package com.purboyndradev.squadsteps.data.services
 
+import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import okio.Path.Companion.toPath
+import androidx.datastore.preferences.preferencesDataStore
 
-internal const val dataStoreFileName = "user.preferences_pb"
+internal const val USER_PREFERENCES_NAME = "user_preferences"
 
-class Datastore {
-    companion object {
-        fun getPreferencesDataStore(path: String) = PreferenceDataStoreFactory.createWithPath {
-            path.toPath()
-        }
-    }
-}
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_PREFERENCES_NAME)
