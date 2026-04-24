@@ -109,6 +109,12 @@ class LoginViewModel(
             is Result.Success -> {
                 val data = result.data
                 println("Result verify auth: $data")
+                _loginState.update {
+                    it.copy(
+                        isLoading = false,
+                        success = true
+                    )
+                }
             }
 
             is Result.Error -> {
@@ -162,6 +168,9 @@ class LoginViewModel(
         )
 
         val verifyResult = usersRepository.register(verifyParams)
+
+        println("Verify result: ${verifyResult is Result.Error}")
+
         if (verifyResult is Result.Error) {
             _loginState.update {
                 it.copy(isLoading = false, error = verifyResult.error.toUiText())

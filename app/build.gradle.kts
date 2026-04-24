@@ -116,4 +116,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.service)
 
+    implementation(libs.datastore.preferences)
+    implementation(libs.datastore)
+
 }

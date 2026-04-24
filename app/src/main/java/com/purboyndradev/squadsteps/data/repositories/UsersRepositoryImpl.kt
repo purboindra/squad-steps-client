@@ -6,19 +6,24 @@ import com.purboyndradev.squadsteps.data.datasources.UsersRemoteDataSource
 import com.purboyndradev.squadsteps.data.network.DataNotFoundException
 import com.purboyndradev.squadsteps.data.network.dtos.VerifyRegisterOptionsParams
 import com.purboyndradev.squadsteps.domain.mapper.toDomain
+import com.purboyndradev.squadsteps.domain.models.TokenModel
 import com.purboyndradev.squadsteps.domain.models.UserModel
 import com.purboyndradev.squadsteps.domain.repositories.UsersRepository
 
 class UsersRepositoryImpl(
     private val remoteDataSource: UsersRemoteDataSource
 ) : UsersRepository {
-    override suspend fun register(params: VerifyRegisterOptionsParams): Result<UserModel, AppError> {
+    override suspend fun register(params: VerifyRegisterOptionsParams): Result<TokenModel, AppError> {
         return when (val result = remoteDataSource.register(params)) {
             is Result.Success -> {
                 val data = result.data
-                val userDto = data.data ?: throw DataNotFoundException("Data not found")
-                val user = userDto.toDomain()
-                Result.Success(user)
+                val userDto = data.data
+                if (userDto != null) {
+                    val user = userDto.toDomain()
+                    Result.Success(user)
+                } else {
+                    Result.Error(AppError.Remote.NotFound)
+                }
             }
 
             is Result.Error -> {
